@@ -13,6 +13,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Date;
 import java.util.StringTokenizer;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 // The tutorial can be found just here on the SSaurel's Blog :
 // https://www.ssaurel.com/blog/create-a-simple-http-web-server-in-java
@@ -20,6 +22,7 @@ import java.util.StringTokenizer;
 public class JavaHTTPServer implements Runnable{
 
     static final File WEB_ROOT = new File(".");
+    static ExecutorService threadManager = Executors.newCachedThreadPool();
     static final String DEFAULT_FILE = "index.html";
     static final String FILE_NOT_FOUND = "404.html";
     static final String METHOD_NOT_SUPPORTED = "not_supported.html";
@@ -50,8 +53,9 @@ public class JavaHTTPServer implements Runnable{
                 }
 
                 // create dedicated thread to manage the client connection
-                Thread thread = new Thread(myServer);
-                thread.start();
+                threadManager.submit(myServer);
+               // Thread thread = new Thread(myServer);
+               // thread.start();
             }
 
         } catch (IOException e) {
